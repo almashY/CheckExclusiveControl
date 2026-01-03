@@ -1,47 +1,28 @@
 package com.example.checkexclusivecontrol
 
 import android.os.Bundle
+import android.widget.ListView
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.checkexclusivecontrol.ui.theme.CheckExclusiveControlTheme
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var databaseHelper: DatabaseHelper
+    private lateinit var userAdapter: UserAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            CheckExclusiveControlTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-        }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+        // XML レイアウトを使う場合も setContentView は利用可能
+        setContentView(R.layout.activity_main)
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CheckExclusiveControlTheme {
-        Greeting("Android")
+        databaseHelper = DatabaseHelper(this)
+
+        // データ取得
+        val users = databaseHelper.getAllUsers()
+
+        // ListView に表示
+        userAdapter = UserAdapter(this, users)
+        val userListView: ListView = findViewById(R.id.userListView)
+        userListView.adapter = userAdapter
     }
 }
