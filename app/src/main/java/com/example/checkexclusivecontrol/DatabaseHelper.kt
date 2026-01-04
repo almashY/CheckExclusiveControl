@@ -1,5 +1,6 @@
 package com.example.checkexclusivecontrol
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
@@ -68,4 +69,24 @@ class DatabaseHelper(context: Context) :
         db.close()
         return users
     }
+
+    fun insertUsers(users: List<User>) {
+        val db = writableDatabase
+        db.beginTransaction()
+
+        try {
+            for (user in users) {
+                val values = ContentValues().apply {
+                    put(USERS_COLUMN_NAME, user.name)
+                    put(USERS_COLUMN_EMAIL, user.email)
+                }
+                db.insert(TABLE_NAME_USERS, null, values)
+            }
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+            db.close()
+        }
+    }
+
 }

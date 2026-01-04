@@ -3,8 +3,8 @@ package com.example.checkexclusivecontrol
 class User(id: Int, name: String, email: String) {
 
     private var id: Int = id
-    private var name: String = name
-    private var email: String = email
+    internal var name: String = name
+    internal var email: String = email
 
     // idを取得するメソッド
     fun getId(): Int {
