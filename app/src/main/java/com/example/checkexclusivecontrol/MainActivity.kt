@@ -8,11 +8,15 @@ import androidx.activity.ComponentActivity
 class MainActivity : ComponentActivity() {
 
     private val apiWrapper = APIWrapper(this)
+    private lateinit var databaseHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        databaseHelper = DatabaseHelper(this)
+
         val button: Button = findViewById<Button>(R.id.button)
         button.setOnClickListener{
             //ここから遷移用のコード
@@ -21,12 +25,22 @@ class MainActivity : ComponentActivity() {
                     // 6000件すべて揃った状態
                     println("取得完了：${items.size}件")
                     // DB保存・Adapter更新など
+                    val users = items.map {
+                        User(0, it.name, it.email)
+                    }
+
+                    // ① 既存データをクリア
+                    databaseHelper.clearUsers()
+                    // ② 新しいデータを保存
+                    databaseHelper.insertUsers(users)
                 },
                 onError = { error ->
                     error.printStackTrace()
                     // エラー表示
                 }
             )
+
+            // ③ 画面遷移
             val intent = Intent(this, SubActivity::class.java)    //intentインスタンスの生成(第二引数は遷移先のktファイル名)
             startActivity(intent)
             //ここまで

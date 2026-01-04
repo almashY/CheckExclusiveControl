@@ -89,4 +89,20 @@ class DatabaseHelper(context: Context) :
         }
     }
 
+    /**
+     * users テーブルを全件クリア
+     */
+    fun clearUsers() {
+        val db = writableDatabase
+        db.beginTransaction()
+
+        try {
+            db.delete(TABLE_NAME_USERS, null, null)
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+            db.close()
+        }
+    }
+
 }
