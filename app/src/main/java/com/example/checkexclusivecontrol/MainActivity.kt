@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.ComponentActivity
+import com.example.checkexclusivecontrol.purchase.PurchaseActivity
 
 class MainActivity : ComponentActivity() {
 
@@ -45,5 +46,15 @@ class MainActivity : ComponentActivity() {
             startActivity(intent)
             //ここまで
         }
+
+        val purchaseButton: Button = findViewById<Button>(R.id.purchase_button)
+        purchaseButton.setOnClickListener{
+            // 画面遷移
+            val intent = Intent(this, PurchaseActivity::class.java)    //intentインスタンスの生成(第二引数は遷移先のktファイル名)
+            startActivity(intent)
+            //ここまで
+        }
+
+
     }
 }
