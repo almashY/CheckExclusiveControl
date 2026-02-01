@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.checkexclusivecontrol.R
+import org.json.JSONArray
 import org.json.JSONObject
 
 
@@ -36,13 +37,31 @@ class PurchaseActivity : ComponentActivity() {
     }
 
     private fun writeJson(item: ContentItem) {
-        val json = JSONObject().apply {
+        val jsonArray = readJsonArray()
+
+        val newItem = JSONObject().apply {
             put("id", item.id)
             put("contentName", item.contentName)
         }
 
+        jsonArray.put(newItem)
+
         openFileOutput("purchase.json", MODE_PRIVATE).use {
-            it.write(json.toString().toByteArray())
+            it.write(jsonArray.toString().toByteArray())
         }
     }
+
+    private fun readJsonArray(): JSONArray {
+        return try {
+            val text = openFileInput("purchase.json")
+                .bufferedReader()
+                .use { it.readText() }
+
+            JSONArray(text)
+        } catch (e: Exception) {
+            // 初回（ファイルがない・空）
+            JSONArray()
+        }
+    }
+
 }
