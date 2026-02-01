@@ -42,7 +42,7 @@ class DatabaseHelper(context: Context) :
     }
 
     /**
-     * ユーザー取得
+     * 全ユーザー取得
      */
     fun getAllUsers(): List<User> {
         val users = mutableListOf<User>()
