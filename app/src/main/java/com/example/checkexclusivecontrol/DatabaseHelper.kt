@@ -34,7 +34,7 @@ class DatabaseHelper(context: Context) :
     }
 
     /**
-     * データベースアップグレード時
+     * データベースアップグレード
      */
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_USERS")
