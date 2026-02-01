@@ -3,6 +3,7 @@ package com.example.checkexclusivecontrol.purchase
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.checkexclusivecontrol.R
 
@@ -12,7 +13,12 @@ class ContentAdapter(
 ) : RecyclerView.Adapter<ContentAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val contentText: TextView = itemView.findViewById(R.id.contentText)
+
         fun bind(item: ContentItem) {
+            // ★ 表示
+            contentText.text = item.contentName
+
             itemView.setOnClickListener {
                 onClick(item) // ← Activity に通知
             }
