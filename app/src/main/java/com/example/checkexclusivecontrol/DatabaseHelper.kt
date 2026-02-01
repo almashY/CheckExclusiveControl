@@ -12,14 +12,14 @@ class DatabaseHelper(context: Context) :
     companion object {
         private const val DATABASE_NAME = "mydatabase.db"   // データベース名
         private const val DATABASE_VERSION = 1              // DBバージョン
-        private const val TABLE_NAME_USERS = "users"        // テ
+        private const val TABLE_NAME_USERS = "users"        // テーブル名
         private const val USERS_COLUMN_ID = "id"            // カラム1
         private const val USERS_COLUMN_NAME = "name"        // カラム2
         private const val USERS_COLUMN_EMAIL = "email"      // カラム3
     }
 
     /**
-     * データベース作成
+     * データベース初回作成時
      */
     override fun onCreate(db: SQLiteDatabase) {
         val createTableQuery = """
@@ -34,7 +34,7 @@ class DatabaseHelper(context: Context) :
     }
 
     /**
-     * データベース時
+     * データベースアップグレード時
      */
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_USERS")
