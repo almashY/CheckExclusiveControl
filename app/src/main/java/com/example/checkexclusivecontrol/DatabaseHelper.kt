@@ -43,8 +43,12 @@ class DatabaseHelper(context: Context) :
      */
     private fun upgrade(version: Int,db: SQLiteDatabase) {
         when (version) {
-            1 -> db.execSQL(UsersTable.ADD_AGE)
-            2 -> db.execSQL(UsersTable.INDEX_EMAIL)
+            1 -> {
+                db.execSQL(UsersTable.ADD_AGE) // sample
+            }
+            2 -> {
+                db.execSQL(UsersTable.INDEX_EMAIL) //sample
+            }
         }
     }
 
