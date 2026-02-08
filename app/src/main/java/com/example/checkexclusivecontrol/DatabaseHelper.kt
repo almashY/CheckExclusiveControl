@@ -23,15 +23,7 @@ class DatabaseHelper(context: Context) :
      * データベース初回作成時
      */
     override fun onCreate(db: SQLiteDatabase) {
-        val createTableQuery = """
-            CREATE TABLE $TABLE_NAME_USERS (
-                $USERS_COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                $USERS_COLUMN_NAME TEXT,
-                $USERS_COLUMN_EMAIL TEXT
-            )
-        """.trimIndent()
-
-        db.execSQL(createTableQuery)
+        db.execSQL(UsersTable.CREATE)
     }
 
     /**
