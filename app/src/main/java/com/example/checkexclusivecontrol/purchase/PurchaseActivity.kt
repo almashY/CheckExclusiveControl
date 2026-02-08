@@ -1,6 +1,7 @@
 package com.example.checkexclusivecontrol.purchase
 
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.ComponentActivity
@@ -28,7 +29,17 @@ class PurchaseActivity : ComponentActivity() {
 
         // ② Adapter 作成（クリック時の処理をここで定義）
         val adapter = ContentAdapter(items) { item ->
-            writeJson(item)
+            AlertDialog.Builder(this) // FragmentではActivityを取得して生成
+                .setTitle("タイトル")
+                .setMessage("メッセージ")
+                .setPositiveButton("OK", { dialog, which ->
+                    // Yesが押された時の挙動
+                    writeJson(item)
+                })
+                .setNegativeButton("No", { dialog, which ->
+                    // Noが押された時の挙動
+                })
+                .show()
         }
 
         // ③ RecyclerView にセット
