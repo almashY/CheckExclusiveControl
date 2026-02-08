@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import androidx.core.database.sqlite.transaction
 
 class DatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -37,8 +38,25 @@ class DatabaseHelper(context: Context) :
      * データベースアップグレード
      */
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_USERS")
-        onCreate(db)
+
+        var version = oldVersion
+
+        db.transaction {
+            while (version < newVersion) {
+                upgrade(version,this)
+                version++
+            }
+        }
+    }
+
+    /**
+     * マイグレーション処理
+     */
+    private fun upgrade(version: Int,db: SQLiteDatabase) {
+        when (version) {
+            1 -> db.execSQL(UsersTable.ADD_AGE)
+            2 -> db.execSQL(UsersTable.INDEX_EMAIL)
+        }
     }
 
     /**
@@ -72,20 +90,14 @@ class DatabaseHelper(context: Context) :
 
     fun insertUsers(users: List<User>) {
         val db = writableDatabase
-        db.beginTransaction()
-
-        try {
+        db.transaction {
             for (user in users) {
                 val values = ContentValues().apply {
                     put(USERS_COLUMN_NAME, user.name)
                     put(USERS_COLUMN_EMAIL, user.email)
                 }
-                db.insert(TABLE_NAME_USERS, null, values)
+                insert(TABLE_NAME_USERS, null, values)
             }
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
-            db.close()
         }
     }
 
@@ -94,15 +106,34 @@ class DatabaseHelper(context: Context) :
      */
     fun clearUsers() {
         val db = writableDatabase
-        db.beginTransaction()
-
-        try {
-            db.delete(TABLE_NAME_USERS, null, null)
-            db.setTransactionSuccessful()
-        } finally {
-            db.endTransaction()
-            db.close()
+        db.transaction {
+            delete(TABLE_NAME_USERS, null, null)
         }
     }
-
 }
+
+
+object UsersTable {
+
+    const val TABLE = "users"
+
+    const val COL_ID = "id"
+    const val COL_NAME = "name"
+    const val COL_EMAIL = "email"
+    const val COL_AGE = "age"
+
+    val CREATE = """
+        CREATE TABLE $TABLE (
+            $COL_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            $COL_NAME TEXT,
+            $COL_EMAIL TEXT
+        )
+    """.trimIndent()
+
+    const val ADD_AGE =
+        "ALTER TABLE $TABLE ADD COLUMN $COL_AGE INTEGER DEFAULT 0"
+
+    const val INDEX_EMAIL =
+        "CREATE INDEX idx_users_email ON $TABLE($COL_EMAIL)"
+}
+
