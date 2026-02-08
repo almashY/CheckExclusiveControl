@@ -14,9 +14,6 @@ class DatabaseHelper(context: Context) :
         private const val DATABASE_NAME = "mydatabase.db"   // データベース名
         private const val DATABASE_VERSION = 1              // DBバージョン
         private const val TABLE_NAME_USERS = "users"        // テーブル名
-        private const val USERS_COLUMN_ID = "id"            // カラム1
-        private const val USERS_COLUMN_NAME = "name"        // カラム2
-        private const val USERS_COLUMN_EMAIL = "email"      // カラム3
     }
 
     /**
@@ -68,9 +65,9 @@ class DatabaseHelper(context: Context) :
         )
 
         while (cursor.moveToNext()) {
-            val id = cursor.getInt(cursor.getColumnIndexOrThrow(USERS_COLUMN_ID))
-            val name = cursor.getString(cursor.getColumnIndexOrThrow(USERS_COLUMN_NAME))
-            val email = cursor.getString(cursor.getColumnIndexOrThrow(USERS_COLUMN_EMAIL))
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow(UsersTable.USERS_COLUMN_ID))
+            val name = cursor.getString(cursor.getColumnIndexOrThrow(UsersTable.USERS_COLUMN_NAME))
+            val email = cursor.getString(cursor.getColumnIndexOrThrow(UsersTable.USERS_COLUMN_EMAIL))
 
             users.add(User(id, name, email))
         }
@@ -85,8 +82,8 @@ class DatabaseHelper(context: Context) :
         db.transaction {
             for (user in users) {
                 val values = ContentValues().apply {
-                    put(USERS_COLUMN_NAME, user.name)
-                    put(USERS_COLUMN_EMAIL, user.email)
+                    put(UsersTable.USERS_COLUMN_NAME, user.name)
+                    put(UsersTable.USERS_COLUMN_EMAIL, user.email)
                 }
                 insert(TABLE_NAME_USERS, null, values)
             }
@@ -109,16 +106,16 @@ object UsersTable {
 
     const val TABLE = "users"
 
-    const val COL_ID = "id"
-    const val COL_NAME = "name"
-    const val COL_EMAIL = "email"
+    const val USERS_COLUMN_ID = "id"            // カラム1
+    const val USERS_COLUMN_NAME = "name"        // カラム2
+    const val USERS_COLUMN_EMAIL = "email"      // カラム3
     const val COL_AGE = "age"
 
     val CREATE = """
         CREATE TABLE $TABLE (
-            $COL_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            $COL_NAME TEXT,
-            $COL_EMAIL TEXT
+            $USERS_COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            $USERS_COLUMN_NAME TEXT,
+            $USERS_COLUMN_EMAIL TEXT
         )
     """.trimIndent()
 
@@ -126,6 +123,6 @@ object UsersTable {
         "ALTER TABLE $TABLE ADD COLUMN $COL_AGE INTEGER DEFAULT 0"
 
     const val INDEX_EMAIL =
-        "CREATE INDEX idx_users_email ON $TABLE($COL_EMAIL)"
+        "CREATE INDEX idx_users_email ON $TABLE($USERS_COLUMN_EMAIL)"
 }
 
