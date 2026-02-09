@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.checkexclusivecontrol.R
+import com.example.checkexclusivecontrol.User
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -23,9 +24,7 @@ class PurchaseActivity : ComponentActivity() {
 
         // ① 表示するデータ
         val items = listOf(
-            ContentItem(1, "コンテンツA"),
-            ContentItem(2, "コンテンツB"),
-            ContentItem(3, "コンテンツC")
+            User(1, "コンテンツ", "a@b")
         )
 
         // ② Adapter 作成（クリック時の処理をここで定義）
@@ -46,12 +45,13 @@ class PurchaseActivity : ComponentActivity() {
         recyclerView.adapter = adapter
     }
 
-    private fun writeJson(item: ContentItem) {
+    private fun writeJson(item: User) {
         val jsonArray = readJsonArray()
 
         val newItem = JSONObject().apply {
             put("id", item.id)
-            put("contentName", item.contentName)
+            put("name", item.name)
+            put("email", item.email)
         }
 
         jsonArray.put(newItem)

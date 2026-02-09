@@ -38,8 +38,8 @@ class UserAdapter(
         val text1 = view!!.findViewById<TextView>(android.R.id.text1)
         val text2 = view.findViewById<TextView>(android.R.id.text2)
 
-        text1.text = user.getName()
-        text2.text = user.getEmail()
+        text1.text = user.name
+        text2.text = user.email
 
         return view
     }

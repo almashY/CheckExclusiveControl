@@ -4,14 +4,14 @@ import android.content.Context
 
 class APIWrapper(private val context: Context) {
 
-    private var cachedItems: List<Item>? = null
+    private var cachedItems: List<User>? = null
 
     fun fetchAllItemsRecursively(
         offset: Int = 0,
         limit: Int = 1000,
         maxCount: Int = 6000,
-        accumulator: MutableList<Item> = mutableListOf(),
-        onSuccess: (List<Item>) -> Unit,
+        accumulator: MutableList<User> = mutableListOf(),
+        onSuccess: (List<User>) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         fetchFromServer(
@@ -43,16 +43,16 @@ class APIWrapper(private val context: Context) {
     fun fetchFromServer(
         offset: Int,
         limit: Int,
-        onSuccess: (List<Item>) -> Unit,
+        onSuccess: (List<User>) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         try {
             if (cachedItems == null) {
-                val json = context.assets.open("users_less_data.json")
+                val json = context.openFileInput("purchase.json")
                     .bufferedReader()
                     .use { it.readText() }
 
-                val type = object : com.google.gson.reflect.TypeToken<List<Item>>() {}.type
+                val type = object : com.google.gson.reflect.TypeToken<List<User>>() {}.type
                 cachedItems = com.google.gson.Gson().fromJson(json, type)
             }
 
@@ -71,11 +71,6 @@ class APIWrapper(private val context: Context) {
 
 }
 
-data class Item(
-    val id: Int,
-    val name: String,
-    val email: String
-)
 
 
 
