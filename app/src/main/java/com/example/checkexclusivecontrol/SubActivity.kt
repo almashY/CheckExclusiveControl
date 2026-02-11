@@ -6,7 +6,7 @@ import android.widget.ListView
 
 class SubActivity : ComponentActivity() {
 
-    private lateinit var databaseHelper: DatabaseHelper
+    private lateinit var appDatabase: AppDatabase
     private lateinit var userAdapter: UserAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,10 +15,10 @@ class SubActivity : ComponentActivity() {
         // XML レイアウトを使う場合も setContentView は利用可能
         setContentView(R.layout.activity_list)
 
-        databaseHelper = DatabaseHelper(this)
+        appDatabase = AppDatabase(this)
 
         // データ取得
-        val users = databaseHelper.getAllUsers()
+        val users = appDatabase.getAllUsers()
 
         // ListView に表示
         userAdapter = UserAdapter(this, users)

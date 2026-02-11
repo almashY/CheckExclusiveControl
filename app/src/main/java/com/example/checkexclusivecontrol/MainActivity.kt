@@ -9,14 +9,14 @@ import com.example.checkexclusivecontrol.purchase.PurchaseActivity
 class MainActivity : ComponentActivity() {
 
     private val apiWrapper = APIWrapper(this)
-    private lateinit var databaseHelper: DatabaseHelper
+    private lateinit var appDatabase: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        databaseHelper = DatabaseHelper(this)
+        appDatabase = AppDatabase(this)
 
         val button: Button = findViewById<Button>(R.id.button)
         button.setOnClickListener{
@@ -31,9 +31,9 @@ class MainActivity : ComponentActivity() {
                     }
 
                     // ① 既存データをクリア
-                    databaseHelper.clearUsers()
+                    appDatabase.clearUsers()
                     // ② 新しいデータを保存
-                    databaseHelper.insertUsers(users)
+                    appDatabase.insertUsers(users)
                 },
                 onError = { error ->
                     error.printStackTrace()
