@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     println("取得完了：${items.size}件")
                     // DB保存・Adapter更新など
                     val users = items.map {
-                        User(0, it.name, it.email)
+                        User(it.id, it.name, it.email)
                     }
 
                     // ① 既存データをクリア

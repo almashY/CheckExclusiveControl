@@ -47,14 +47,13 @@ class APIWrapper(private val context: Context) {
         onError: (Throwable) -> Unit
     ) {
         try {
-            if (cachedItems == null) {
-                val json = context.openFileInput("purchase.json")
-                    .bufferedReader()
-                    .use { it.readText() }
 
-                val type = object : com.google.gson.reflect.TypeToken<List<User>>() {}.type
-                cachedItems = com.google.gson.Gson().fromJson(json, type)
-            }
+            val json = context.openFileInput("purchase.json")
+                .bufferedReader()
+                .use { it.readText() }
+
+            val type = object : com.google.gson.reflect.TypeToken<List<User>>() {}.type
+            cachedItems = com.google.gson.Gson().fromJson(json, type)
 
             val allItems = cachedItems ?: emptyList()
 
@@ -62,6 +61,7 @@ class APIWrapper(private val context: Context) {
                 .drop(offset)
                 .take(limit)
 
+            cachedItems = null
             onSuccess(sliced)
 
         } catch (e: Exception) {
