@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
+import com.example.checkexclusivecontrol.purchase.MenuItemsTable
 
 class AppDatabase(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -13,14 +14,14 @@ class AppDatabase(context: Context) :
     companion object {
         private const val DATABASE_NAME = "mydatabase.db"   // データベース名
         private const val DATABASE_VERSION = 1              // DBバージョン
-        private const val TABLE_NAME_USERS = "users"        // テーブル名
+        private const val TABLE_NAME_MENU_ITEMS = "menu_items"        // テーブル名
     }
 
     /**
      * データベース初回作成時
      */
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL(UsersTable.CREATE)
+        db.execSQL(MenuItemsTable.CREATE)
     }
 
     /**
@@ -44,10 +45,10 @@ class AppDatabase(context: Context) :
     private fun upgrade(version: Int,db: SQLiteDatabase) {
         when (version) {
             1 -> {
-                db.execSQL(UsersTable.ADD_AGE) // sample
+                db.execSQL(MenuItemsTable.ADD_AGE) // sample
             }
             2 -> {
-                db.execSQL(UsersTable.INDEX_EMAIL) //sample
+                db.execSQL(MenuItemsTable.INDEX_EMAIL) //sample
             }
         }
     }
@@ -55,11 +56,11 @@ class AppDatabase(context: Context) :
     /**
      * 全ユーザー取得
      */
-    fun getAllUsers(): List<User> {
-        val users = mutableListOf<User>()
+    fun getAllUsers(): List<MenuItemsDatabaseData> {
+        val menuItemsDatabaseData = mutableListOf<MenuItemsDatabaseData>()
         val db = readableDatabase
         val cursor: Cursor = db.query(
-            TABLE_NAME_USERS,
+            TABLE_NAME_MENU_ITEMS,
             null,
             null,
             null,
@@ -69,27 +70,27 @@ class AppDatabase(context: Context) :
         )
 
         while (cursor.moveToNext()) {
-            val id = cursor.getInt(cursor.getColumnIndexOrThrow(UsersTable.USERS_COLUMN_ID))
-            val name = cursor.getString(cursor.getColumnIndexOrThrow(UsersTable.USERS_COLUMN_NAME))
-            val email = cursor.getString(cursor.getColumnIndexOrThrow(UsersTable.USERS_COLUMN_EMAIL))
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow(MenuItemsTable.MENU_ITEMS_COLUMN_ID))
+            val storeId = cursor.getString(cursor.getColumnIndexOrThrow(MenuItemsTable.MENU_ITEMS_COLUMN_STORE_ID))
+            val name = cursor.getString(cursor.getColumnIndexOrThrow(MenuItemsTable.MENU_ITEMS_COLUMN_NAME))
 
-            users.add(User(id, name, email))
+            menuItemsDatabaseData.add(MenuItemsDatabaseData(id, storeId, name))
         }
 
         cursor.close()
         db.close()
-        return users
+        return menuItemsDatabaseData
     }
 
-    fun insertUsers(users: List<User>) {
+    fun insertUsers(menuItemsDatabaseData: List<MenuItemsDatabaseData>) {
         val db = writableDatabase
         db.transaction {
-            for (user in users) {
+            for (user in menuItemsDatabaseData) {
                 val values = ContentValues().apply {
-                    put(UsersTable.USERS_COLUMN_NAME, user.name)
-                    put(UsersTable.USERS_COLUMN_EMAIL, user.email)
+                    put(MenuItemsTable.MENU_ITEMS_COLUMN_STORE_ID, user.storeId)
+                    put(MenuItemsTable.MENU_ITEMS_COLUMN_NAME, user.name)
                 }
-                insert(TABLE_NAME_USERS, null, values)
+                insert(TABLE_NAME_MENU_ITEMS, null, values)
             }
         }
     }
@@ -100,33 +101,7 @@ class AppDatabase(context: Context) :
     fun clearUsers() {
         val db = writableDatabase
         db.transaction {
-            delete(TABLE_NAME_USERS, null, null)
+            delete(TABLE_NAME_MENU_ITEMS, null, null)
         }
     }
 }
-
-
-object UsersTable {
-
-    const val TABLE = "users"
-
-    const val USERS_COLUMN_ID = "id"            // カラム1
-    const val USERS_COLUMN_NAME = "name"        // カラム2
-    const val USERS_COLUMN_EMAIL = "email"      // カラム3
-    const val COL_AGE = "age"
-
-    val CREATE = """
-        CREATE TABLE $TABLE (
-            $USERS_COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            $USERS_COLUMN_NAME TEXT,
-            $USERS_COLUMN_EMAIL TEXT
-        )
-    """.trimIndent()
-
-    const val ADD_AGE =
-        "ALTER TABLE $TABLE ADD COLUMN $COL_AGE INTEGER DEFAULT 0"
-
-    const val INDEX_EMAIL =
-        "CREATE INDEX idx_users_email ON $TABLE($USERS_COLUMN_EMAIL)"
-}
-

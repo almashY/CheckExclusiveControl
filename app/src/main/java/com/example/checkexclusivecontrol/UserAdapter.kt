@@ -9,16 +9,16 @@ import android.widget.TextView
 
 class UserAdapter(
     private val context: Context,
-    private val users: List<User>
+    private val menuItemsDatabaseData: List<MenuItemsDatabaseData>
 ) : BaseAdapter() {
 
     // アダプターが管理するアイテム数を返す
     override fun getCount(): Int {
-        return users.size
+        return menuItemsDatabaseData.size
     }
 
-    override fun getItem(position: Int): User {
-        return users[position]
+    override fun getItem(position: Int): MenuItemsDatabaseData {
+        return menuItemsDatabaseData[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -38,8 +38,8 @@ class UserAdapter(
         val text1 = view!!.findViewById<TextView>(android.R.id.text1)
         val text2 = view.findViewById<TextView>(android.R.id.text2)
 
-        text1.text = user.name
-        text2.text = user.email
+        text1.text = user.storeId
+        text2.text = user.name
 
         return view
     }

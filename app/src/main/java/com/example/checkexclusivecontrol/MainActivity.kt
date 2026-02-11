@@ -26,14 +26,14 @@ class MainActivity : ComponentActivity() {
                     // 6000件すべて揃った状態
                     println("取得完了：${items.size}件")
                     // DB保存・Adapter更新など
-                    val users = items.map {
-                        User(it.id, it.name, it.email)
+                    val menuItems = items.map {
+                        MenuItemsDatabaseData(it.id, it.storeId, it.name)
                     }
 
                     // ① 既存データをクリア
                     appDatabase.clearUsers()
                     // ② 新しいデータを保存
-                    appDatabase.insertUsers(users)
+                    appDatabase.insertUsers(menuItems)
                 },
                 onError = { error ->
                     error.printStackTrace()

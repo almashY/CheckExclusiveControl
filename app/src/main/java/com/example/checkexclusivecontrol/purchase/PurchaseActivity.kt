@@ -1,15 +1,13 @@
 package com.example.checkexclusivecontrol.purchase
 
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.checkexclusivecontrol.R
-import com.example.checkexclusivecontrol.User
+import com.example.checkexclusivecontrol.MenuItemsDatabaseData
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -24,7 +22,7 @@ class PurchaseActivity : ComponentActivity() {
 
         // ① 表示するデータ
         val items = listOf(
-            User(1, "コンテンツ", "a@b")
+            MenuItemsDatabaseData(1, "店名1", "味噌ラーメン")
         )
 
         // ② Adapter 作成（クリック時の処理をここで定義）
@@ -45,13 +43,13 @@ class PurchaseActivity : ComponentActivity() {
         recyclerView.adapter = adapter
     }
 
-    private fun writeJson(item: User) {
+    private fun writeJson(item: MenuItemsDatabaseData) {
         val jsonArray = readJsonArray()
 
         val newItem = JSONObject().apply {
             put("id", item.id)
+            put("store_id", item.storeId)
             put("name", item.name)
-            put("email", item.email)
         }
 
         jsonArray.put(newItem)

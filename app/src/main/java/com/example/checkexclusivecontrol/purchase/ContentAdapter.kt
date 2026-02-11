@@ -6,19 +6,19 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.checkexclusivecontrol.R
-import com.example.checkexclusivecontrol.User
+import com.example.checkexclusivecontrol.MenuItemsDatabaseData
 
 class ContentAdapter(
-    private val items: List<User>,
-    private val onClick: (User) -> Unit
+    private val items: List<MenuItemsDatabaseData>,
+    private val onClick: (MenuItemsDatabaseData) -> Unit
 ) : RecyclerView.Adapter<ContentAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val contentText: TextView = itemView.findViewById(R.id.contentText)
 
-        fun bind(item: User) {
+        fun bind(item: MenuItemsDatabaseData) {
             // ★ 表示
-            contentText.text = item.name
+            contentText.text = item.storeId
 
             itemView.setOnClickListener {
                 onClick(item) // ← Activity に通知

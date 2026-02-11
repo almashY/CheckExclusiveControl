@@ -1,17 +1,21 @@
 package com.example.checkexclusivecontrol
 
 import android.content.Context
+import android.util.Log
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 
 class APIWrapper(private val context: Context) {
 
-    private var cachedItems: List<User>? = null
+    private var cachedItems: List<MenuItemsDatabaseData>? = null
 
     fun fetchAllItemsRecursively(
         offset: Int = 0,
         limit: Int = 1000,
         maxCount: Int = 6000,
-        accumulator: MutableList<User> = mutableListOf(),
-        onSuccess: (List<User>) -> Unit,
+        accumulator: MutableList<MenuItemsDatabaseData> = mutableListOf(),
+        onSuccess: (List<MenuItemsDatabaseData>) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         fetchFromServer(
@@ -43,7 +47,7 @@ class APIWrapper(private val context: Context) {
     fun fetchFromServer(
         offset: Int,
         limit: Int,
-        onSuccess: (List<User>) -> Unit,
+        onSuccess: (List<MenuItemsDatabaseData>) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         try {
@@ -52,8 +56,13 @@ class APIWrapper(private val context: Context) {
                 .bufferedReader()
                 .use { it.readText() }
 
-            val type = object : com.google.gson.reflect.TypeToken<List<User>>() {}.type
-            cachedItems = com.google.gson.Gson().fromJson(json, type)
+            // DBのカラム名とデータクラスのプロパティ名の形式をスネークケースに合わせる
+            val gson = GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create()
+
+            val type = object : TypeToken<List<MenuItemsDatabaseData>>() {}.type
+            cachedItems = gson.fromJson(json, type)
 
             val allItems = cachedItems ?: emptyList()
 
@@ -65,6 +74,7 @@ class APIWrapper(private val context: Context) {
             onSuccess(sliced)
 
         } catch (e: Exception) {
+            Log.e("fetch data", "error")
             onError(e)
         }
     }
