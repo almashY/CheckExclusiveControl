@@ -14,11 +14,11 @@ class ContentAdapter(
 ) : RecyclerView.Adapter<ContentAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val contentText: TextView = itemView.findViewById(R.id.contentText)
+        private val contentText: TextView = itemView.findViewById(R.id.name)
 
         fun bind(item: MenuItemsDatabaseData) {
             // ★ 表示
-            contentText.text = item.storeId
+            contentText.text = item.name
 
             itemView.setOnClickListener {
                 onClick(item) // ← Activity に通知
